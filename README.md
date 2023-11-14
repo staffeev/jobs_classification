@@ -1,2 +1,2 @@
-# jobs_classification
-Repository for AgroHack 2023
+# Программа кластеризации сельскохозяйственных профессий
+Репозиторий разработки программы для [кластеризации](https://rshbdigital.ru/agrocode-hack/agrocode-hack2023-task3) сельскохозяйственных профессий на основе резюме.
