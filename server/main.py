@@ -14,7 +14,7 @@ def read_root():
 
 @app.get("/index.js", response_class=FileResponse)
 def read_root():
-    return open('index.js').read()
+    return 'index.js'
 
 @app.get("/get_clusters")
 def read_root():
