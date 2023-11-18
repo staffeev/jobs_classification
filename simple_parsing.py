@@ -1,25 +1,35 @@
 import os
+import multiprocessing as mp
 from bs4 import BeautifulSoup as bs
 from datetime import datetime
 from settings import EDU_TYPE_TO_VALUE, MONTHS, FIELDNAMES
 import pandas as pd
 import locale
 import re
+import timeit
+import aiofiles
+import asyncio
+import pathlib
 locale.setlocale(locale.LC_TIME, 'ru_RU.UTF-8')
 
 
 class Resume:
     """Класс для резюме"""
-    def __init__(self, id_: int, path: str):
+    def __init__(self, id_: int, path: str, parent_list: list):
        self.id_ = id_
        self.path = path
+       self.parent_list = parent_list
        self.content = None
        self.soup = None
     
-    def open_file(self):
+    async def get_data(self):
+        await self.open_file()
+        self.parent_list.append(self.process())
+    
+    async def open_file(self):
         """Сохранение файла в переменную"""
-        with open(self.path) as file:
-            self.content = file.read()
+        async with aiofiles.open(self.path) as file:
+            self.content = await file.read()
             self.soup = bs(self.content, "lxml")
     
     def process(self):
@@ -125,21 +135,15 @@ def save_resumes_to_csv(data: list):
     df.to_csv("datasets/jobs.csv")
 
 
-if __name__ == "__main__":
-    proccessed = []
-    c = 0
+async def main():
     folder_path = "data/resumes/"
     paths = os.listdir(folder_path)
-    for ix, p in enumerate(paths, 1):
-        # try:
-        r = Resume(ix, folder_path + p)
-        r.open_file()
-        res = r.process()
-        proccessed.append(res)
-        c += len(res[-1])
-        # except Exception as e:
-        #     print(e)
-        #     print(p)
-        #     break
-    converted = [job for resume in proccessed for job in convert_resume_to_jobs(resume)]
+    test = []
+    resumes_list = [Resume(ix, folder_path + p, test) for ix, p in enumerate(paths, 1)]
+    await asyncio.gather(*[r.get_data() for r in resumes_list])
+    converted = [job for resume in test for job in convert_resume_to_jobs(resume)]
     save_resumes_to_csv(converted)
+
+
+if __name__ == "__main__":
+    print("Затраченное время:", timeit.timeit(lambda: asyncio.run(main()), number=1))
