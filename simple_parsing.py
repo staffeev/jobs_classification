@@ -1,7 +1,8 @@
 import os
 from bs4 import BeautifulSoup as bs
 from datetime import datetime
-from settings import EDU_TYPE_TO_VALUE, MONTHS
+from settings import EDU_TYPE_TO_VALUE, MONTHS, FIELDNAMES
+import pandas as pd
 import locale
 import re
 locale.setlocale(locale.LC_TIME, 'ru_RU.UTF-8')
@@ -9,7 +10,8 @@ locale.setlocale(locale.LC_TIME, 'ru_RU.UTF-8')
 
 class Resume:
     """Класс для резюме"""
-    def __init__(self, path: str):
+    def __init__(self, id_: int, path: str):
+       self.id_ = id_
        self.path = path
        self.content = None
        self.soup = None
@@ -31,35 +33,52 @@ class Resume:
         language_info = main_div.find("div", {"data-qa": "resume-block-languages"})
         skills_info = main_div.find("div", {"data-qa": "skills-table"})
         experience_info = main_div.find("div", {"data-qa": "resume-block-experience"})
-        # print(skills_info)
-        return self._process_experience(experience_info)
+        return (
+            self.id_,
+            *self._process_birth_info(birth_info), self._process_education(edu_info),
+            self._process_languages(language_info), self._process_skills(skills_info),
+            self._process_experience(experience_info)
+        )
     
     def _process_birth_info(self, div):
         """Получение информации о рождении"""
         paragraph = div.find("p")
-        sex = paragraph.find("span", {"data-qa": "resume-personal-gender"}).text
-        birth_date = paragraph.find("span", {"data-qa": "resume-personal-birthday"}).text
-        date = datetime.strptime(birth_date, "%d %B %Y")
+        sex = paragraph.find("span", {"data-qa": "resume-personal-gender"})
+        if not sex is None:
+            sex = sex.text
+        birth_date = paragraph.find("span", {"data-qa": "resume-personal-birthday"})
+        date = None
+        if not birth_date is None:
+            birth_date = birth_date.text
+            date = datetime.strptime(birth_date, "%d %B %Y")
         return sex, date
     
     def _process_education(self, div):
         """Получение информации об образовании"""
+        if div is None:
+            return None
         type_of_edu = div.find("div", {"class": "bloko-columns-row"}).text
         return EDU_TYPE_TO_VALUE[type_of_edu]
     
     def _process_languages(self, div):
         """Получение информации о языках"""
+        if div is None:
+            return None
         langs = div.find("div", {"class": "bloko-tag-list"}).findAll("p")
         return len(langs)
     
     def _process_skills(self, div):
         """Получение инфорации о навыках"""
+        if div is None:
+            return None
         skills = div.find("div", {"class": "bloko-tag-list"})\
             .findAll("span", {"class": "bloko-tag__section"})
         return [i.text for i in skills]
     
     def _process_experience(self, div):
         """Получение информации о местах работы"""
+        if div is None:
+            return None
         jobs = div.find("div", {"class": "resume-block-item-gap"})\
             .findAll("div", {"class": "resume-block-item-gap"})
         return [self._process_job(job) for job in jobs]
@@ -88,26 +107,41 @@ class Resume:
         return start_date, value, job_name.text, job_description.text
 
 
-    def save_to_csv(self):
-        """Сохранение в csv"""
-        pass
+def convert_resume_to_jobs(data):
+    """Конвертация резюме в список занятостей"""
+    id_, sex, birthday, edu_level, num_lang, skills, jobs = data
+    if not skills is None: 
+        skills = ", ".join(skills)
+    result = []
+    for job in jobs:
+        start_date, num_months, name, descr = job
+        result.append((id_, start_date, num_months, name, descr, sex, birthday, edu_level, num_lang, skills))
+    return result
+    
+
+def save_resumes_to_csv(data: list):
+    """Сохранение данных из html в csv"""
+    df = pd.DataFrame(data, columns=FIELDNAMES)
+    df.to_csv("datasets/jobs.csv")
 
 
 if __name__ == "__main__":
-    stat = {}
-    head = 20
-    count = 0
+    proccessed = []
+    c = 0
     folder_path = "./data/resumes/"
     paths = os.listdir(folder_path)
-    for p in paths:
-        r = Resume(folder_path + p)
+    for ix, p in enumerate(paths, 1):
+        # try:
+        r = Resume(ix, folder_path + p)
         r.open_file()
-        res = tuple(r.process())
-        stat[res] = stat.get(res, 0) + 1
-        # stat[len(res)] = stat.get(len(res), 0) + 1
-        # for i in res:
-        #     stat[i] = stat.get(i, 0) + 1
-        break
-    print("Количество", count)
-    for i in sorted(stat, key=lambda x: stat[x], reverse=True)[:head]:
-        print(i, stat[i])
+        res = r.process()
+        proccessed.append(res)
+        c += len(res[-1])
+        # except Exception as e:
+        #     print(e)
+        #     print(p)
+        #     break
+    converted = [job for resume in proccessed for job in convert_resume_to_jobs(resume)]
+    for i in range(len(converted[0])):
+        print(converted[0][i], FIELDNAMES[i])
+    save_resumes_to_csv(converted)

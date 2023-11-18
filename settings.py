@@ -11,3 +11,4 @@ EDU_TYPE_TO_VALUE = {
 }
 MONTHS = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", 
            "Октябрь", "Ноябрь", "Декабрь"]
+FIELDNAMES = ["id", "start_date", "num_month", "name", "description", "sex", "birthday", "edu_level", "num_lang", "skills"]

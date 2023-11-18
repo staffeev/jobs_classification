@@ -1,1 +1,0 @@
-duration_value = "5 лет 1 месяц"
