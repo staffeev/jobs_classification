@@ -1,4 +1,4 @@
-from scripts.pasring import parsing_pipeline
+from scripts.parsing import parsing_pipeline
 from scripts.normalize import normalization_pipeline
 from scripts.clustering import clustering_pipeline
 from argparse import ArgumentParser
@@ -16,7 +16,6 @@ parser.add_argument("--show_wordcloud", choices=FIELDNAMES, type=str)
 
 
 if __name__ == "__main__":
-
     args = parser.parse_args()
     if args.create_dataset:
         df = parsing_pipeline(args.folder_path)
