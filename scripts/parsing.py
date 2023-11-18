@@ -10,6 +10,7 @@ import locale
 import re
 import aiofiles
 import asyncio
+from settings import PATH_TO_RESUMES
 from functions import check_time
 locale.setlocale(locale.LC_TIME, 'ru_RU.UTF-8')
 
@@ -157,10 +158,10 @@ def convert_resumes_to_jobs(data):
     return result
 
 
-def save_resumes_to_csv(data: list):
+def return_to_pipeline(data: list):
     """Сохранение данных из html в csv"""
     df = pd.DataFrame(data, columns=FIELDNAMES)
-    df.to_csv("datasets/jobs.csv", index=False)
+    return df
 
 
 async def main(path):
@@ -170,14 +171,14 @@ async def main(path):
     resumes_list = [Resume(ix, folder_path + p, proccessed) for ix, p in enumerate(paths, 1)]
     await asyncio.gather(*[r.get_data() for r in resumes_list])
     converted = convert_resumes_to_jobs(proccessed)
-    save_resumes_to_csv(converted)
+    return return_to_pipeline(converted)
 
 
 @check_time
-def create_dataset(path):
-    asyncio.run(main(path))
+def parsing_pipeline(path):
+    return asyncio.run(main(path))
 
 
 if __name__ == "__main__":
-    path = "data/resumes/"
-    create_dataset(path)
+    path = "PATH_TO_RESUMES"
+    print(parsing_pipeline(path))
