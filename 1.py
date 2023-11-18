@@ -5,7 +5,11 @@ from slovnet.model.emb import NavecEmbedding
 path = 'navec_hudlit_v1_12B_500K_300d_100q.tar'  # 51MB
 navec = Navec.load(path)  # ~1 sec, ~100MB RAM
 
+<<<<<<< HEAD
 words = ['бетонщик']
+=======
+words = ['блять', "блядь"]
+>>>>>>> 2f2a1e1 (Revert "pochti gotovo)")
 ids = [navec.vocab[e] for e in words]
 resume1 = ""
 emb = NavecEmbedding(navec)
