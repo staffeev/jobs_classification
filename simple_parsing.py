@@ -10,6 +10,7 @@ import timeit
 import aiofiles
 import asyncio
 import pathlib
+from functions import check_time
 locale.setlocale(locale.LC_TIME, 'ru_RU.UTF-8')
 
 
@@ -135,8 +136,8 @@ def save_resumes_to_csv(data: list):
     df.to_csv("datasets/jobs.csv")
 
 
-async def main():
-    folder_path = "data/resumes/"
+async def main(path):
+    folder_path = path
     paths = os.listdir(folder_path)
     test = []
     resumes_list = [Resume(ix, folder_path + p, test) for ix, p in enumerate(paths, 1)]
@@ -145,5 +146,11 @@ async def main():
     save_resumes_to_csv(converted)
 
 
+@check_time
+def create_dataset(path):
+    asyncio.run(main(path))
+
+
 if __name__ == "__main__":
-    print("Затраченное время:", timeit.timeit(lambda: asyncio.run(main()), number=1))
+    path = "data/resumes/"
+    create_dataset(path)
