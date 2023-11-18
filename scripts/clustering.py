@@ -4,7 +4,6 @@ import pickle
 # import matplotlib.pyplot as plt
 from sklearn.metrics.pairwise import cosine_distances
 from sklearn.cluster import AgglomerativeClustering
-<<<<<<< HEAD
 
 
 if __name__ == "__main__":
@@ -54,5 +53,4 @@ df['x'] = X_embedded[:, 0]
 df['y'] = X_embedded[:, 1]
 fig = px.scatter(df, x="x", y="y", color="cluster", hover_data=['name', 'description'])
 fig.show()
->>>>>>> eb09854 (basic server)
 
