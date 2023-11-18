@@ -1,7 +1,10 @@
 import os
+import sys
+ 
+# setting path
+sys.path.append('../jobs_classification')
 from bs4 import BeautifulSoup as bs
 from datetime import datetime
-from settings import EDU_TYPE_TO_VALUE, MONTHS, FIELDNAMES
 import pandas as pd
 import locale
 import re
@@ -9,6 +12,22 @@ import aiofiles
 import asyncio
 from functions import check_time
 locale.setlocale(locale.LC_TIME, 'ru_RU.UTF-8')
+
+
+EDU_TYPE_TO_VALUE = {
+    'Неоконченное высшее образование': 2, 
+    'Высшее образование (Магистр)': 4, 
+    'Higher education': 3, 
+    'Высшее образование (Бакалавр)': 3, 
+    'Среднее специальное образование': 1, 
+    'Образование': 0, 
+    'Высшее образование (Кандидат наук)': 5, 
+    'Среднее образование': 1, 
+    'Высшее образование': 3
+}
+MONTHS = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", 
+           "Октябрь", "Ноябрь", "Декабрь"]
+FIELDNAMES = ["job_id", "resume_id", "start_date", "num_month", "name", "description", "sex", "birthday", "edu_level", "num_lang", "skills", "filename"]
 
 
 class Resume:
@@ -116,7 +135,7 @@ class Resume:
 
 
 def convert_resume_to_jobs(data):
-    """Конвертация резюме в список занятостей"""
+    """Конвертация одного резюме в список занятостей"""
     id_, sex, birthday, edu_level, num_lang, skills, jobs, path = data
     if not skills is None: 
         skills = ", ".join(skills)
@@ -125,12 +144,23 @@ def convert_resume_to_jobs(data):
         start_date, num_months, name, descr = job
         result.append((id_, start_date, num_months, name, descr, sex, birthday, edu_level, num_lang, skills, path))
     return result
-    
+
+
+def convert_resumes_to_jobs(data):
+    """Конвертация резюме в список занятостей"""
+    job_counter = 1
+    result = []
+    for resume in data:
+        for job in convert_resume_to_jobs(resume):
+            result.append((job_counter, *job))
+            job_counter += 1
+    return result
+
 
 def save_resumes_to_csv(data: list):
     """Сохранение данных из html в csv"""
     df = pd.DataFrame(data, columns=FIELDNAMES)
-    df.to_csv("datasets/jobs.csv")
+    df.to_csv("datasets/jobs.csv", index=False)
 
 
 async def main(path):
@@ -139,7 +169,7 @@ async def main(path):
     proccessed = []
     resumes_list = [Resume(ix, folder_path + p, proccessed) for ix, p in enumerate(paths, 1)]
     await asyncio.gather(*[r.get_data() for r in resumes_list])
-    converted = [job for resume in proccessed for job in convert_resume_to_jobs(resume)]
+    converted = convert_resumes_to_jobs(proccessed)
     save_resumes_to_csv(converted)
 
 
