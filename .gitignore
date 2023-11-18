@@ -2,3 +2,4 @@ models
 datasets/russian_words_roots.csv
 russian_words.txt
 __pycache__
+datasets/navec_hudlit_v1_12B_500K_300d_100q.tar

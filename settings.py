@@ -12,3 +12,10 @@ EDU_TYPE_TO_VALUE = {
 MONTHS = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", 
            "Октябрь", "Ноябрь", "Декабрь"]
 FIELDNAMES = ["id", "start_date", "num_month", "name", "description", "sex", "birthday", "edu_level", "num_lang", "skills", "filename"]
+PATH_TO_NAVEC = "datasets\\navec_hudlit_v1_12B_500K_300d_100q.tar"
+NORMALIZED_NAME = "normalized_name"
+NORMALIZED_DESCRIPTION = "normalized_description"
+NAME_VEC = "name_vec"
+DESCRIPTION_VEC = "description_vec"
+NAME = "name"
+DESCRIPTION = "description"
