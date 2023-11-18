@@ -14,6 +14,7 @@ parser.add_argument("--show_wordcloud", choices=FIELDNAMES, type=str)
 
 
 if __name__ == "__main__":
+
     args = parser.parse_args()
     if args.create_dataset:
         create_dataset(args.folder_path)
