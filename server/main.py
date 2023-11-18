@@ -5,7 +5,13 @@ import pandas as pd
 import pickle
 
 df = pickle.load(open('../datasets/clusters.pickle', 'rb'))
-clusters = df[['name', 'description', 'x', 'y', 'cluster']].values.tolist()
+clusters = {
+    "name": list(df["name"]),
+    "description": list(df["description"]),
+    "x": list(df["x"]),
+    "y": list(df["y"]),
+    "cluster": list(df["cluster"])
+}
 app = FastAPI()
 
 @app.get("/", response_class=HTMLResponse)
