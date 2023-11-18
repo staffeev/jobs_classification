@@ -1,2 +1,1 @@
-        # for i in res:
-        #     stat[i] = stat.get(i, 0) + 1
+duration_value = "5 лет 1 месяц"
