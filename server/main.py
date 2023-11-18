@@ -16,6 +16,10 @@ def read_root():
 def read_root():
     return 'index.js'
 
+@app.get("/plotly.js", response_class=FileResponse)
+def read_root():
+    return 'plotly.js'
+
 @app.get("/get_clusters")
 def read_root():
     return clusters
