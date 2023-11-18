@@ -1,4 +1,8 @@
 models
 datasets/russian_words_roots.csv
 russian_words.txt
+<<<<<<< HEAD
 __pycache__
+=======
+__pycache__/
+>>>>>>> eb09854 (basic server)

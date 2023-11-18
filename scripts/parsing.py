@@ -178,6 +178,24 @@ def create_dataset(path):
     asyncio.run(main(path))
 
 
+<<<<<<< HEAD
+=======
+async def main(path):
+    folder_path = path
+    paths = os.listdir(folder_path)
+    proccessed = []
+    resumes_list = [Resume(ix, folder_path + p, proccessed) for ix, p in enumerate(paths, 1)]
+    await asyncio.gather(*[r.get_data() for r in resumes_list])
+    converted = [job for resume in proccessed for job in convert_resume_to_jobs(resume)]
+    save_resumes_to_csv(converted)
+
+
+@check_time
+def create_dataset(path):
+    asyncio.run(main(path))
+
+
+>>>>>>> eb09854 (basic server)
 if __name__ == "__main__":
     path = "data/resumes/"
     create_dataset(path)

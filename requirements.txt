@@ -7,4 +7,9 @@ navec == 0.10.0
 matplotlib == 3.7.4
 jupyterlab == 4.0.8
 pymorphy2 == 0.9.0
+<<<<<<< HEAD
+=======
+uvicorn == 0.22
+fastapi == 0.104.0
+>>>>>>> eb09854 (basic server)
 pypi-kenlm
