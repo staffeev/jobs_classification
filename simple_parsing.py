@@ -1,15 +1,12 @@
 import os
-import multiprocessing as mp
 from bs4 import BeautifulSoup as bs
 from datetime import datetime
 from settings import EDU_TYPE_TO_VALUE, MONTHS, FIELDNAMES
 import pandas as pd
 import locale
 import re
-import timeit
 import aiofiles
 import asyncio
-import pathlib
 from functions import check_time
 locale.setlocale(locale.LC_TIME, 'ru_RU.UTF-8')
 
@@ -139,10 +136,10 @@ def save_resumes_to_csv(data: list):
 async def main(path):
     folder_path = path
     paths = os.listdir(folder_path)
-    test = []
-    resumes_list = [Resume(ix, folder_path + p, test) for ix, p in enumerate(paths, 1)]
+    proccessed = []
+    resumes_list = [Resume(ix, folder_path + p, proccessed) for ix, p in enumerate(paths, 1)]
     await asyncio.gather(*[r.get_data() for r in resumes_list])
-    converted = [job for resume in test for job in convert_resume_to_jobs(resume)]
+    converted = [job for resume in proccessed for job in convert_resume_to_jobs(resume)]
     save_resumes_to_csv(converted)
 
 
