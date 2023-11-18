@@ -37,7 +37,7 @@ class Resume:
             self.id_,
             *self._process_birth_info(birth_info), self._process_education(edu_info),
             self._process_languages(language_info), self._process_skills(skills_info),
-            self._process_experience(experience_info)
+            self._process_experience(experience_info), self.path
         )
     
     def _process_birth_info(self, div):
@@ -109,13 +109,13 @@ class Resume:
 
 def convert_resume_to_jobs(data):
     """Конвертация резюме в список занятостей"""
-    id_, sex, birthday, edu_level, num_lang, skills, jobs = data
+    id_, sex, birthday, edu_level, num_lang, skills, jobs, path = data
     if not skills is None: 
         skills = ", ".join(skills)
     result = []
     for job in jobs:
         start_date, num_months, name, descr = job
-        result.append((id_, start_date, num_months, name, descr, sex, birthday, edu_level, num_lang, skills))
+        result.append((id_, start_date, num_months, name, descr, sex, birthday, edu_level, num_lang, skills, path))
     return result
     
 
@@ -128,7 +128,7 @@ def save_resumes_to_csv(data: list):
 if __name__ == "__main__":
     proccessed = []
     c = 0
-    folder_path = "./data/resumes/"
+    folder_path = "data/resumes/"
     paths = os.listdir(folder_path)
     for ix, p in enumerate(paths, 1):
         # try:
@@ -142,6 +142,4 @@ if __name__ == "__main__":
         #     print(p)
         #     break
     converted = [job for resume in proccessed for job in convert_resume_to_jobs(resume)]
-    for i in range(len(converted[0])):
-        print(converted[0][i], FIELDNAMES[i])
     save_resumes_to_csv(converted)
