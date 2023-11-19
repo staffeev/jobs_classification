@@ -1,5 +1,4 @@
 import re
-from navec import Navec
 import pandas as pd
 import pickle
 from logger import make_logger
@@ -32,7 +31,6 @@ async def processing_pipe(df: pd.DataFrame, test_mode=False, save_pickle=False):
     def root_search(string):
         return [string]
 
-    morph = pymorphy2.MorphAnalyzer()
     TO_DELETE = {'CONJ', 'PREP', 'PRCL', 'INTJ', 'NUMR', 'NPRO'}
     model = SentenceTransformer('cointegrated/rubert-tiny2')
 
