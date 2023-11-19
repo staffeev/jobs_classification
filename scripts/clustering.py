@@ -24,7 +24,7 @@ def clustering_pipeline(df):
             else row[DESCRIPTION_VEC] / np.linalg.norm(row[DESCRIPTION_VEC])
         coords[i] = name_vec * 10 + desc_vec
         # coords[i] = name_vec
-    clustering = KMeans(n_clusters=30, random_state=0, n_init="auto").fit(coords)
+    clustering = KMeans(n_clusters=50, random_state=0, n_init="auto").fit(coords)
     labels = clustering.labels_
     df['cluster'] = pd.Series(labels)
     print('clustered')
