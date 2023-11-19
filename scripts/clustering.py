@@ -10,7 +10,7 @@ import plotly.express as px
 from sklearn.metrics.pairwise import cosine_distances
 from sklearn.cluster import AgglomerativeClustering
 from logger import make_logger
-from processing import PICKLE_PROCESSED
+from scripts.processing import PICKLE_PROCESSED
 
 
 PICKLE_CLUSTERED = "clustered.pickle"
