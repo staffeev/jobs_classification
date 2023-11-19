@@ -6,6 +6,7 @@ from argparse import ArgumentParser
 from settings import FIELDNAMES, PATH_TO_JOBS_DATASET, PATH_TO_RESUMES
 from functions import get_cloud, show_cloud, get_frequencies
 import asyncio
+import pandas as pd
 
 parser = ArgumentParser()
 parser.add_argument("--dataset_path", default=PATH_TO_JOBS_DATASET, type=str,

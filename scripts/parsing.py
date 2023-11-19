@@ -130,6 +130,7 @@ class Resume:
         start_date = datetime(
             month=MONTHS.index(start_date_text[0])+1, year=int(start_date_text[1]), day=1)
         if "по настоящее время" in duration.text:
+            print("lagukvksvvjbuagcgigifgayf")
             value = (datetime.now() - start_date).month
 
         job_name = experience.find("div", {"data-qa": "resume-block-experience-position"}).text
@@ -166,6 +167,7 @@ def convert_resumes_to_jobs(data):
 def return_to_pipeline(data: list):
     """Сохранение данных из html в csv"""
     df = pd.DataFrame(data, columns=FIELDNAMES)
+    df.to_csv("./datasets/resumes.csv")
     return df
 
 

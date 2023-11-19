@@ -32,4 +32,7 @@ PREV_CLUSTER_ID = PREV_SUFFIX + CLUSTER_ID
 PREV_CLUSTER_NAME = PREV_SUFFIX + CLUSTER_NAME
 PREV_COORDS = PREV_SUFFIX + JOB_VEC
 PREV_NAME = PREV_SUFFIX + NAME
+# WORD_TO_GET_WEIGHT = ["работа", "должность", "профессия", "карьера", "трудоустройство", "занятость"]
+WORD_TO_GET_WEIGHT = ["профессия"]
+VEC_LEN = 300
 
