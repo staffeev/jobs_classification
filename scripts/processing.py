@@ -1,4 +1,3 @@
-import pymorphy2
 import re
 from navec import Navec
 import pandas as pd
