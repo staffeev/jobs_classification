@@ -75,6 +75,9 @@ async def processing_pipeline(df: pd.DataFrame, test_mode=False, save_pickle=Fal
                 for root_searched_word in root_search(word):
                     root_search_lst.append(root_searched_word)
 
+        if root_search_lst == []:
+            return "<pad>"
+
         return " ".join(root_search_lst)
 
     def to_vec(string: str):

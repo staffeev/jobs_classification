@@ -5,6 +5,7 @@ import sys
 sys.path.append('../jobs_classification')
 from bs4 import BeautifulSoup as bs
 from datetime import datetime
+from dateutil import parser as date_parser
 import pandas as pd
 import locale
 import re
@@ -48,8 +49,9 @@ class Resume:
     
     async def open_file(self):
         """Сохранение файла в переменную"""
-        async with aiofiles.open(self.path) as file:
+        async with aiofiles.open(self.path, encoding="UTF-8") as file:
             self.content = await file.read()
+            self.content = self.content.replace(u"\xa0", u" ")
             self.soup = bs(self.content, "lxml")
     
     def process(self):
@@ -171,8 +173,8 @@ async def main(path, save_pickle=False):
     paths = os.listdir(folder_path)
     proccessed = []
     resumes_list = [Resume(ix, folder_path + p, proccessed) for ix, p in enumerate(paths, 1)]
-    logger.info("resumes getted")
     await asyncio.gather(*[r.get_data() for r in resumes_list])
+    logger.info("resumes getted")
     converted = convert_resumes_to_jobs(proccessed)
     logger.info("resumes converted to jobs")
     df = return_to_pipeline(converted)
@@ -183,7 +185,7 @@ async def main(path, save_pickle=False):
     return df
 
 
-async def parsing_pipeline(path):
+async def parsing_pipeline(path, save_pickle=False):
     logger.info("parsing started")
     return await main(path)
 
