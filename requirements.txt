@@ -4,3 +4,4 @@ sentence_transformers == 2.2.2
 uvicorn == 0.18.3
 fastapi == 0.89.1
 pandas == 1.5.1
+aiofiles == 23.2.1
