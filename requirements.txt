@@ -5,3 +5,5 @@ scikit-learn == 1.0.2
 navec == 0.10.0
 matplotlib == 3.7.4
 sentence_transformers==2.2.2
+uvicorn==0.18.3
+fastapi==0.89.1
