@@ -4,13 +4,6 @@ from wordcloud import WordCloud
 import pandas as pd
 
 
-def check_time(func):
-    def _inner_func(*args, **kwargs):
-        print(f"Затраченное время на {func.__name__}:", 
-              timeit.timeit(lambda: func(*args, **kwargs),number=1))
-    return _inner_func
-
-
 def show_cloud(wordcloud, label="Облако слов", show_flag=False):
     """Отрисовка облака"""
     plt.figure(figsize=(20, 20))

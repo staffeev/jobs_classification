@@ -12,7 +12,7 @@ EDU_TYPE_TO_VALUE = {
 MONTHS = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", 
            "Октябрь", "Ноябрь", "Декабрь"]
 FIELDNAMES = ["id", "start_date", "num_month", "name", "description", "sex", "birthday", "edu_level", "num_lang", "skills", "filename"]
-PATH_TO_NAVEC = "datasets\\navec_hudlit_v1_12B_500K_300d_100q.tar"
+PATH_TO_NAVEC = "datasets/navec_hudlit_v1_12B_500K_300d_100q.tar"
 PATH_TO_JOBS_DATASET = "datasets/jobs.csv"
 PATH_TO_RESUMES = "data/resumes/"
 NORMALIZED_NAME = "normalized_name"

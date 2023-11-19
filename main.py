@@ -4,6 +4,7 @@ from scripts.clustering import clustering_pipeline
 from argparse import ArgumentParser
 from settings import FIELDNAMES, PATH_TO_JOBS_DATASET, PATH_TO_RESUMES
 from functions import get_cloud, show_cloud, get_frequencies
+import asyncio
 
 parser = ArgumentParser()
 parser.add_argument("--dataset_path", default=PATH_TO_JOBS_DATASET, type=str,
@@ -15,11 +16,15 @@ parser.add_argument("--folder_path", default=PATH_TO_RESUMES, type=str,
 parser.add_argument("--show_wordcloud", choices=FIELDNAMES, type=str)
 
 
-if __name__ == "__main__":
+async def main():
     args = parser.parse_args()
     if args.create_dataset:
-        df = parsing_pipeline(args.folder_path)
-        df = normalization_pipeline(df)
+        df = await parsing_pipeline(args.folder_path)
+        df = await normalization_pipeline(df)
         clustering_pipeline(df)
     if args.show_wordcloud:
         show_cloud(get_cloud(get_frequencies(args.show_wordcloud, args.dataset_path)))
+
+
+if __name__ == "__main__":
+    asyncio.run(main())

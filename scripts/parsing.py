@@ -11,7 +11,6 @@ import re
 import aiofiles
 import asyncio
 from settings import PATH_TO_RESUMES
-from functions import check_time
 locale.setlocale(locale.LC_TIME, 'ru_RU.UTF-8')
 
 
@@ -174,11 +173,11 @@ async def main(path):
     return return_to_pipeline(converted)
 
 
-@check_time
-def parsing_pipeline(path):
-    return asyncio.run(main(path))
+async def parsing_pipeline(path):
+    return await main(path)
 
 
-if __name__ == "__main__":
-    path = "PATH_TO_RESUMES"
-    print(parsing_pipeline(path))
+# if __name__ == "__main__":
+#     asyncio.
+#     path = "PATH_TO_RESUMES"
+#     print(parsing_pipeline(path))

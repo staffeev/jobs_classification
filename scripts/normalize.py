@@ -7,12 +7,12 @@ from settings import NORMALIZED_NAME, \
     NAME_VEC, \
     DESCRIPTION_VEC, \
     NAME, \
-    DESCRIPTION
+    DESCRIPTION, \
+    PATH_TO_NAVEC
 
 
-def normalization_pipeline(df: pd.DataFrame):
-    path = 'navec_hudlit_v1_12B_500K_300d_100q.tar'
-    navec = Navec.load(path)
+async def normalization_pipeline(df: pd.DataFrame):
+    navec = Navec.load(PATH_TO_NAVEC)
 
     def spell_check(string):
         return string
@@ -21,7 +21,7 @@ def normalization_pipeline(df: pd.DataFrame):
     TO_DELETE = {'CONJ', 'PREP', 'PRCL', 'INTJ', 'NUMR', 'NPRO'}
 
 
-    def normalize(string: str) -> list[str]:
+    def normalize(string: str) -> str:
         lower_string = string.lower()
         lower_string = lower_string.replace('\t', ' ').replace('\n', ' ')
         lower_string = lower_string.replace("зам.", "заместитель ")\
@@ -34,11 +34,11 @@ def normalization_pipeline(df: pd.DataFrame):
         no_wspace_string = no_punc_string.strip()
         lst_string = no_wspace_string.split()
         if lst_string == []:
-            return []
+            return "<pad>"
         pav_lst = []
         for word in lst_string:
             if word not in navec:
-                for e in spell_check([word]).split():
+                for e in spell_check(word).split():
                     pav_lst.append(e)
             else:
                 pav_lst.append(word)
