@@ -10,9 +10,12 @@ import locale
 import re
 import aiofiles
 import asyncio
-from settings import PATH_TO_RESUMES
+import pickle
+from logger import make_logger
+from settings import PATH_TO_PICKLE
 locale.setlocale(locale.LC_TIME, 'ru_RU.UTF-8')
-
+PICKLE_PARSED = "parsed.pickle"
+logger = make_logger(__name__)
 
 EDU_TYPE_TO_VALUE = {
     'Неоконченное высшее образование': 2, 
@@ -163,17 +166,25 @@ def return_to_pipeline(data: list):
     return df
 
 
-async def main(path):
+async def main(path, save_pickle=False):
     folder_path = path
     paths = os.listdir(folder_path)
     proccessed = []
     resumes_list = [Resume(ix, folder_path + p, proccessed) for ix, p in enumerate(paths, 1)]
+    logger.info("resumes getted")
     await asyncio.gather(*[r.get_data() for r in resumes_list])
     converted = convert_resumes_to_jobs(proccessed)
-    return return_to_pipeline(converted)
+    logger.info("resumes converted to jobs")
+    df = return_to_pipeline(converted)
+    if save_pickle:
+        with open(PATH_TO_PICKLE + PICKLE_PARSED, 'wb') as f:
+            pickle.dump(df, f)
+        logger.info("parsed pickle file dumped")
+    return df
 
 
 async def parsing_pipeline(path):
+    logger.info("parsing started")
     return await main(path)
 
 
