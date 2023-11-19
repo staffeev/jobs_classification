@@ -10,9 +10,12 @@ import locale
 import re
 import aiofiles
 import asyncio
-from settings import PATH_TO_RESUMES
+import pickle
+from logger import make_logger
+from settings import PATH_TO_PICKLE
 locale.setlocale(locale.LC_TIME, 'ru_RU.UTF-8')
-
+PICKLE_PARSED = "parsed.pickle"
+logger = make_logger(__name__)
 
 EDU_TYPE_TO_VALUE = {
     'Неоконченное высшее образование': 2, 
@@ -45,8 +48,9 @@ class Resume:
     
     async def open_file(self):
         """Сохранение файла в переменную"""
-        async with aiofiles.open(self.path) as file:
+        async with aiofiles.open(self.path, encoding="UTF-8") as file:
             self.content = await file.read()
+            # self.content = self.content.replace(u"\xa0", u" ")
             self.soup = bs(self.content, "lxml")
     
     def process(self):
@@ -127,7 +131,7 @@ class Resume:
         start_date = datetime(
             month=MONTHS.index(start_date_text[0])+1, year=int(start_date_text[1]), day=1)
         if "по настоящее время" in duration.text:
-            value = (datetime.now() - start_date).month
+            value = (datetime.now() - start_date) // 2629746
 
         job_name = experience.find("div", {"data-qa": "resume-block-experience-position"})
         job_description = experience.find("div", {"data-qa": "resume-block-experience-description"})
@@ -163,17 +167,25 @@ def return_to_pipeline(data: list):
     return df
 
 
-async def main(path):
+async def main(path, save_pickle=False):
     folder_path = path
     paths = os.listdir(folder_path)
     proccessed = []
     resumes_list = [Resume(ix, folder_path + p, proccessed) for ix, p in enumerate(paths, 1)]
     await asyncio.gather(*[r.get_data() for r in resumes_list])
+    logger.info("resumes getted")
     converted = convert_resumes_to_jobs(proccessed)
-    return return_to_pipeline(converted)
+    logger.info("resumes converted to jobs")
+    df = return_to_pipeline(converted)
+    if save_pickle:
+        with open(PATH_TO_PICKLE + PICKLE_PARSED, 'wb') as f:
+            pickle.dump(df, f)
+        logger.info("parsed pickle file dumped")
+    return df
 
 
-async def parsing_pipeline(path):
+async def parsing_pipe(path, save_pickle=False):
+    logger.info("parsing started")
     return await main(path)
 
 
