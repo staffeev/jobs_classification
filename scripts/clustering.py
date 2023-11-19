@@ -13,7 +13,7 @@ from logger import make_logger
 from scripts.processing import PICKLE_PROCESSED
 
 
-PICKLE_CLUSTERED = "clustered.pickle"
+PICKLE_CLUSTERED = "clusters.pickle"
 logger = make_logger(__name__)
 
 
