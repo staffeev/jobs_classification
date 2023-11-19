@@ -4,8 +4,6 @@ from navec import Navec
 import pandas as pd
 from settings import NORMALIZED_NAME, \
     NORMALIZED_DESCRIPTION, \
-    NAME_VEC, \
-    DESCRIPTION_VEC, \
     NAME, \
     DESCRIPTION, \
     PATH_TO_NAVEC
@@ -24,13 +22,13 @@ async def normalization_pipeline(df: pd.DataFrame):
     def normalize(string: str) -> str:
         lower_string = string.lower()
         lower_string = lower_string.replace('\t', ' ').replace('\n', ' ')
-        lower_string = lower_string.replace("зам.", "заместитель ")\
-            .replace("нач.", "начальник ")\
-            .replace("рук.", "руководитель ")\
-                .replace("ген.", "генеральный ")\
-                    .replace("ст.", "старший ")
-        no_number_string = re.sub(r'\d+','',lower_string)
-        no_punc_string = re.sub(r'[^\w\s]',' ', no_number_string)
+        lower_string = lower_string.replace("зам.", "заместитель ") \
+            .replace("нач.", "начальник ") \
+            .replace("рук.", "руководитель ") \
+            .replace("ген.", "генеральный ") \
+            .replace("ст.", "старший ")
+        no_number_string = re.sub(r'\d+', '', lower_string)
+        no_punc_string = re.sub(r'[^\w\s]', ' ', no_number_string)
         no_wspace_string = no_punc_string.strip()
         lst_string = no_wspace_string.split()
         if lst_string == []:
@@ -53,11 +51,6 @@ async def normalization_pipeline(df: pd.DataFrame):
 
         return " ".join(normalized_lst)
 
-    def to_vec(string: str):
-        return sum([navec[word] for word in string.split() if word in navec])
-
     df[NORMALIZED_NAME] = df[NAME].apply(normalize) 
     df[NORMALIZED_DESCRIPTION] = df[DESCRIPTION].apply(normalize) 
-    df[NAME_VEC] = df[NORMALIZED_NAME].apply(to_vec)
-    df[DESCRIPTION_VEC] = df[NORMALIZED_DESCRIPTION].apply(to_vec)
     return df
