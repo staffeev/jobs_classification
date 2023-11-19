@@ -50,7 +50,7 @@ class Resume:
         """Сохранение файла в переменную"""
         async with aiofiles.open(self.path, encoding="UTF-8") as file:
             self.content = await file.read()
-            self.content = self.content.replace(u"\xa0", u" ")
+            # self.content = self.content.replace(u"\xa0", u" ")
             self.soup = bs(self.content, "lxml")
     
     def process(self):
@@ -131,7 +131,7 @@ class Resume:
         start_date = datetime(
             month=MONTHS.index(start_date_text[0])+1, year=int(start_date_text[1]), day=1)
         if "по настоящее время" in duration.text:
-            value = (datetime.now() - start_date).month
+            value = (datetime.now() - start_date) // 2629746
 
         job_name = experience.find("div", {"data-qa": "resume-block-experience-position"})
         job_description = experience.find("div", {"data-qa": "resume-block-experience-description"})

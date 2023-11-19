@@ -18,7 +18,7 @@ PICKLE_PROCESSED = "processed.pickle"
 logger = make_logger(__name__)
 
 
-def processing_pipe(df: pd.DataFrame, test_mode=False, save_pickle=False):
+async def processing_pipe(df: pd.DataFrame, test_mode=False, save_pickle=False):
     logger.info("processing started")
     if test_mode:
         with open(PATH_TO_PICKLE + PICKLE_PARSED, 'wb') as f:
@@ -89,7 +89,6 @@ def processing_pipe(df: pd.DataFrame, test_mode=False, save_pickle=False):
     
     df[NORMALIZED_NAME] = df[NAME].apply(normalize) 
     df[NORMALIZED_DESCRIPTION] = df[DESCRIPTION].apply(normalize) 
-    print(df[[NORMALIZED_NAME, NORMALIZED_DESCRIPTION]])
     logger.info("text fields normalized")
     df[NAME_VEC] = df[NORMALIZED_NAME].apply(to_vec)
     df[DESCRIPTION_VEC] = df[NORMALIZED_DESCRIPTION].apply(to_vec)
