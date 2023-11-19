@@ -1,9 +1,0 @@
-beautifulsoup4 == 4.10.0
-deeppavlov == 1.4.0
-numpy == 1.23.0
-scikit-learn == 1.0.0
-navec == 0.10.0
-pymorphy2 == 0.9.0
-uvicorn == 0.22
-fastapi == 0.104.0
-pypi-kenlm
