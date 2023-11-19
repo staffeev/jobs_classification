@@ -24,13 +24,13 @@ async def normalization_pipeline(df: pd.DataFrame):
     def normalize(string: str) -> str:
         lower_string = string.lower()
         lower_string = lower_string.replace('\t', ' ').replace('\n', ' ')
-        lower_string = lower_string.replace("зам.", "заместитель ")\
-            .replace("нач.", "начальник ")\
-            .replace("рук.", "руководитель ")\
-                .replace("ген.", "генеральный ")\
-                    .replace("ст.", "старший ")
-        no_number_string = re.sub(r'\d+','',lower_string)
-        no_punc_string = re.sub(r'[^\w\s]',' ', no_number_string)
+        lower_string = lower_string.replace("зам.", "заместитель ") \
+            .replace("нач.", "начальник ") \
+            .replace("рук.", "руководитель ") \
+            .replace("ген.", "генеральный ") \
+            .replace("ст.", "старший ")
+        no_number_string = re.sub(r'\d+', '', lower_string)
+        no_punc_string = re.sub(r'[^\w\s]', ' ', no_number_string)
         no_wspace_string = no_punc_string.strip()
         lst_string = no_wspace_string.split()
         if lst_string == []:

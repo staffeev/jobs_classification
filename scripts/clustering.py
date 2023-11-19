@@ -1,10 +1,11 @@
 import pandas as pd
 import numpy as np
+import pickle
 from sklearn.manifold import TSNE
 from settings import PATH_TO_JOBS_DATASET, NAME_VEC, DESCRIPTION_VEC
 import plotly.express as px
 from sklearn.metrics.pairwise import cosine_distances
-from sklearn.cluster import AgglomerativeClustering
+from sklearn.cluster import AgglomerativeClustering, HDBSCAN, KMeans
 
 
 def clustering_pipeline(df):
@@ -15,8 +16,15 @@ def clustering_pipeline(df):
         return cosine_distances([chel1[NAME_VEC]], [chel2[NAME_VEC]])[0, 0]
     coords = np.zeros((n_resumes, emb_len))
     for i, row in df.iterrows():
-        coords[i] = row[NAME_VEC] * 10 + row[DESCRIPTION_VEC]
-    clustering = AgglomerativeClustering(n_clusters=50).fit(coords)
+        name_vec = np.zeros(emb_len) \
+            if np.linalg.norm(row[NAME_VEC]) == 0 \
+            else row[NAME_VEC] / np.linalg.norm(row[NAME_VEC])
+        desc_vec = np.zeros(emb_len) \
+            if np.linalg.norm(row[DESCRIPTION_VEC]) == 0 \
+            else row[DESCRIPTION_VEC] / np.linalg.norm(row[DESCRIPTION_VEC])
+        coords[i] = name_vec * 10 + desc_vec
+        # coords[i] = name_vec
+    clustering = KMeans(n_clusters=30, random_state=0, n_init="auto").fit(coords)
     labels = clustering.labels_
     df['cluster'] = pd.Series(labels)
     print('clustered')
@@ -30,7 +38,6 @@ def clustering_pipeline(df):
     df.to_pickle("./datasets/clusters.pickle")
     fig = px.scatter(df, x="x", y="y", color="cluster", hover_data=['name', 'description'])
     fig.show()
-
 
 if __name__ == "__main__":
     df = pd.read_csv(PATH_TO_JOBS_DATASET)

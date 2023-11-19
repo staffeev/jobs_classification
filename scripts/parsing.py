@@ -105,10 +105,13 @@ class Resume:
     def _process_experience(self, div):
         """Получение информации о местах работы"""
         if div is None:
-            return None
+            return []
         jobs = div.find("div", {"class": "resume-block-item-gap"})\
             .findAll("div", {"class": "resume-block-item-gap"})
-        return [self._process_job(job) for job in jobs]
+        result = []
+        for job in jobs:
+            result += self._process_job(job)
+        return result
     
     def _process_job(self, div):
         """Получение информации об одном месте работы"""
@@ -129,9 +132,12 @@ class Resume:
         if "по настоящее время" in duration.text:
             value = (datetime.now() - start_date).month
 
-        job_name = experience.find("div", {"data-qa": "resume-block-experience-position"})
-        job_description = experience.find("div", {"data-qa": "resume-block-experience-description"})
-        return start_date, value, job_name.text, job_description.text
+        job_name = experience.find("div", {"data-qa": "resume-block-experience-position"}).text
+        job_description = experience.find("div", {"data-qa": "resume-block-experience-description"}).text
+        result = []
+        for job_part in job_name.replace(',', ';').split(';'):
+            result.append((start_date, value, job_part, job_description))
+        return result
 
 
 def convert_resume_to_jobs(data):
@@ -177,7 +183,10 @@ async def parsing_pipeline(path):
     return await main(path)
 
 
-# if __name__ == "__main__":
-#     asyncio.
-#     path = "PATH_TO_RESUMES"
-#     print(parsing_pipeline(path))
+def create_dataset(path):
+    asyncio.run(main(path))
+
+
+if __name__ == "__main__":
+    path = "data/resumes/"
+    create_dataset(path)
