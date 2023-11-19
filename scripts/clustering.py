@@ -6,7 +6,6 @@ import pickle
 from sklearn.manifold import TSNE
 from settings import PATH_TO_JOBS_DATASET, NAME_VEC, DESCRIPTION_VEC, COORDS, AVG_CLUSTEER_COORDS, \
     NAME, DESCRIPTION, COORDS_DIFFERENCE, CENTER_CLUSTER_COORDS, CLUSTER_NAME, CLUSTER_ID, PATH_TO_PICKLE
-import plotly.express as px
 from sklearn.metrics.pairwise import cosine_distances
 from sklearn.cluster import AgglomerativeClustering
 from logger import make_logger
