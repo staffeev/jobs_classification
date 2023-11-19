@@ -95,7 +95,6 @@ async def processing_pipe(df: pd.DataFrame, test_mode=False, save_pickle=False):
     logger.info("text fields vectorized")
 
     if save_pickle:
-        with open(PATH_TO_PICKLE + PICKLE_PROCESSED, 'wb') as f:
-            pickle.dump(df, f)
+        df.to_pickle(PATH_TO_PICKLE + PICKLE_PROCESSED)
         logger.info("processed pickle file dumped")
     return df

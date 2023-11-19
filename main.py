@@ -27,7 +27,7 @@ async def main():
     else:
         df = pd.read_csv(PATH_TO_JOBS_DATASET)
     df = await processing_pipe(df, save_pickle=args.save_pickles)
-    clustering_pipe(df)
+    clustering_pipe(df, save_pickle=args.save_pickles)
     if args.show_wordcloud:
         show_cloud(get_cloud(get_frequencies(args.show_wordcloud, args.dataset_path)))
 

@@ -178,8 +178,7 @@ async def main(path, save_pickle=False):
     logger.info("resumes converted to jobs")
     df = return_to_pipeline(converted)
     if save_pickle:
-        with open(PATH_TO_PICKLE + PICKLE_PARSED, 'wb') as f:
-            pickle.dump(df, f)
+        df.to_pickle(PATH_TO_PICKLE + PICKLE_PARSED)
         logger.info("parsed pickle file dumped")
     return df
 
