@@ -16,7 +16,6 @@ parser.add_argument("--save_pickles", default=False, action="store_true",
                     help="Флаг, нужно ли сохранять pickle на каждом этапе")                 
 parser.add_argument("--folder_path", default=PATH_TO_RESUMES, type=str,
                     help="Указание пути с файлами резюме")
-parser.add_argument("-show_wordcloud", choices=FIELDNAMES, type=str)
 parser.add_argument("-test", choices=["parsing", "processing", "clustering"], type=str)
 
 
@@ -28,8 +27,6 @@ async def main():
         df = pd.read_csv(PATH_TO_JOBS_DATASET)
     df = await processing_pipe(df, save_pickle=args.save_pickles, test_mode=True)
     clustering_pipe(df, save_pickle=args.save_pickles)
-    if args.show_wordcloud:
-        show_cloud(get_cloud(get_frequencies(args.show_wordcloud, args.dataset_path)))
 
 
 if __name__ == "__main__":
