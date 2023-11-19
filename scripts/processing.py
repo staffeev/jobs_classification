@@ -23,7 +23,6 @@ async def processing_pipe(df: pd.DataFrame, test_mode=False, save_pickle=False):
         with open(PATH_TO_PICKLE + PICKLE_PARSED, 'wb') as f:
             df = pickle.load(f)
         logger.info("pickle file loaded")
-    navec = Navec.load(PATH_TO_NAVEC)
 
     def spell_check(string):
         return [string]
