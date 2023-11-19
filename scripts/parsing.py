@@ -73,6 +73,7 @@ class Resume:
         sex = paragraph.find("span", {"data-qa": "resume-personal-gender"})
         if not sex is None:
             sex = sex.text
+        return sex, datetime(year=1980, month=12, day=15)
         birth_date = paragraph.find("span", {"data-qa": "resume-personal-birthday"})
         date = None
         if not birth_date is None:

@@ -9,7 +9,7 @@ from settings import PATH_TO_JOBS_DATASET, JOB_VEC, \
     NAME, DESCRIPTION, COORDS_DIFFERENCE, \
     CENTER_CLUSTER_COORDS, CLUSTER_NAME, CLUSTER_ID
 from sklearn.metrics.pairwise import cosine_distances
-from sklearn.cluster import AgglomerativeClustering, HDBSCAN, KMeans
+from sklearn.cluster import AgglomerativeClustering, KMeans
 
 
 def get_center_of_cluster(df, column_name):
@@ -26,7 +26,7 @@ def get_center_of_cluster(df, column_name):
 
 
 def clustering_pipeline(df):
-    clustering = KMeans(n_clusters=50, random_state=0, n_init="auto").fit(np.stack(df[JOB_VEC]))
+    clustering = KMeans(n_clusters=50, random_state=0).fit(np.stack(df[JOB_VEC]))
     labels = clustering.labels_
     df[CLUSTER_ID] = pd.Series(labels)
     X_embedded = TSNE(n_components=2, learning_rate='auto', init='random', perplexity=3)\

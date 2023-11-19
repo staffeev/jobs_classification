@@ -53,5 +53,5 @@ async def normalization_pipeline(df: pd.DataFrame):
 
     df[NORMALIZED_NAME] = df[NAME].apply(normalize) 
     df[NORMALIZED_DESCRIPTION] = df[DESCRIPTION].apply(normalize) 
-    df.to_csv("./datasets/resumes_norm.csv")
+    df.to_pickle("./datasets/resumes_norm.pickle")
     return df
