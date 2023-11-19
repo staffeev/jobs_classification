@@ -11,7 +11,7 @@ from scipy.special import softmax
 from settings import WORD_TO_GET_WEIGHT
 import pickle
 
-np.warnings.filterwarnings('ignore', category=np.VisibleDeprecationWarning)       
+# np.warnings.filterwarnings('ignore', category=np.VisibleDeprecationWarning)       
 
 
 def vectorize_pipeline(df):
@@ -43,27 +43,14 @@ def vectorize_pipeline(df):
     def bag_of_words(string: str):
         if not string:
             return np.zeros(300)
-        # print(string)
         words = string.split()
         scores = calc_scores(words)
-        # print(scores)
-        nvc = [navec.get(word, np.zeros((1, VEC_LEN))) for word in words]
-        # print(words)
-        # print(len(nvc))
-        # print(len(scores))
-        # if nvc[0] == np.zeros(300):
-        #     print(string)
+        nvc = [navec.get(word, np.zeros(VEC_LEN)) for word in words]
         res = np.array([nvc[x] * scores[x] for x in range(len(words))])
-        # if not res.sum().any():
-        #     print(string)
-        # print(len(res))
-        # print(res)
         sum_ = res.sum(axis=0)
         if len(sum_) == 1:
             sum_ = sum_[0]
-        # print(len(res.sum(axis=0)[0]))
         return sum_
-
 
     for i, row in df.iterrows():
         name_vec = bag_of_words(row[NORMALIZED_NAME])

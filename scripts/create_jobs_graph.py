@@ -24,6 +24,10 @@ def get_prev_cluster_info(df):
 def draw_graph_from_df(df):
     graph = nx.from_pandas_edgelist(df)
     nx.draw(graph)
+    pos = nx.spring_layout()
+    nx.draw(graph, pos=pos, labels=label_dict, with_labels=True, font_size=4, node_color="green", width=0.5,
+            arrowsize=5, node_size=100)
+    nx.draw_networkx_edge_labels(g, pos, edge_labels=edge_labels, font_size=4)
     plt.show()
 
 
