@@ -1,9 +1,21 @@
+import sys
+sys.append("../jobs_classification")
 import pandas as pd
 import pickle
 import numpy as np
 from sklearn.metrics.pairwise import cosine_distances
 import networkx as nx
 from matplotlib import pyplot as plt
+
+
+def f():
+    df = pickle.load(open('datasets/clusters.pickle', 'rb'))
+    dfs = df.sort_values(["resume_id", "start_date"])
+    shifted = dfs.shift(1, fill_value=-1)
+    dfs[["prev_cluster", "prev_name", "prev_coords"]] = shifted[["cluster", "name", "coords"]]
+    
+    dfs = dfs[dfs["resume_id"] == shifted["resume_id"]]
+    dfs[["prev_cluster", "prev_name", "prev_coords", "cluster", "name", "coords"]].to_pickle("datasets/jobs_connections.pickle")
 
 
 def draw_graph_from_df(df):
