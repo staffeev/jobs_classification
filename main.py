@@ -25,7 +25,7 @@ async def main():
         df = await parsing_pipe(args.folder_path, save_pickle=args.save_pickles)
     else:
         df = pd.read_csv(PATH_TO_JOBS_DATASET)
-    df = await processing_pipe(df, save_pickle=args.save_pickles, test_mode=True)
+    df = await processing_pipe(df, save_pickle=args.save_pickles)
     clustering_pipe(df, save_pickle=args.save_pickles)
 
 
