@@ -34,8 +34,7 @@ if __name__ == "__main__":
     graph_info = graph_info.rename(columns={
         0: "weight", CLUSTER_NAME: "source", PREV_CLUSTER_NAME: "target"
     })
-
-    draw_graph_from_df(graph_info)
+    graph_info.to_csv("./datasets/jobs_graph.csv")
 
 
     
