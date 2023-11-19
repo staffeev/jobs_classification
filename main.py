@@ -1,6 +1,6 @@
-from scripts.parsing import parsing_pipeline
-from scripts.processing import processing_pipeline
-from scripts.clustering import clustering_pipeline
+from scripts.parsing import parsing_pipe
+from scripts.processing import processing_pipe
+from scripts.clustering import clustering_pipe
 from argparse import ArgumentParser
 from settings import FIELDNAMES, PATH_TO_JOBS_DATASET, PATH_TO_RESUMES
 from functions import get_cloud, show_cloud, get_frequencies
@@ -23,11 +23,11 @@ parser.add_argument("-test", choices=["parsing", "processing", "clustering"], ty
 async def main():
     args = parser.parse_args()
     if args.create_dataset:
-        df = await parsing_pipeline(args.folder_path, save_pickle=args.save_pickles)
+        df = await parsing_pipe(args.folder_path, save_pickle=args.save_pickles)
     else:
         df = pd.read_csv(PATH_TO_JOBS_DATASET)
-    df = await processing_pipeline(df, save_pickle=args.save_pickles)
-    clustering_pipeline(df)
+    df = await processing_pipe(df, save_pickle=args.save_pickles)
+    clustering_pipe(df)
     if args.show_wordcloud:
         show_cloud(get_cloud(get_frequencies(args.show_wordcloud, args.dataset_path)))
 

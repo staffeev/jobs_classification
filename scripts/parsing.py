@@ -5,7 +5,6 @@ import sys
 sys.path.append('../jobs_classification')
 from bs4 import BeautifulSoup as bs
 from datetime import datetime
-from dateutil import parser as date_parser
 import pandas as pd
 import locale
 import re
@@ -185,7 +184,7 @@ async def main(path, save_pickle=False):
     return df
 
 
-async def parsing_pipeline(path, save_pickle=False):
+async def parsing_pipe(path, save_pickle=False):
     logger.info("parsing started")
     return await main(path)
 

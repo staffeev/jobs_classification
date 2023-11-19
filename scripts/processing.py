@@ -18,7 +18,7 @@ PICKLE_PROCESSED = "processed.pickle"
 logger = make_logger(__name__)
 
 
-async def processing_pipeline(df: pd.DataFrame, test_mode=False, save_pickle=False):
+def processing_pipe(df: pd.DataFrame, test_mode=False, save_pickle=False):
     logger.info("processing started")
     if test_mode:
         with open(PATH_TO_PICKLE + PICKLE_PARSED, 'wb') as f:
@@ -48,7 +48,7 @@ async def processing_pipeline(df: pd.DataFrame, test_mode=False, save_pickle=Fal
         no_punc_string = re.sub(r'[^\w\s]',' ', no_number_string)
         no_wspace_string = no_punc_string.strip()
         lst_string = no_wspace_string.split()
-
+        
         if lst_string == []:
             return "<pad>"
         
@@ -59,7 +59,7 @@ async def processing_pipeline(df: pd.DataFrame, test_mode=False, save_pickle=Fal
                     spell_check_lst.append(spell_checked_word)
             else:
                 spell_check_lst.append(word)
-
+        
         normal_form_lst = []
         for word in spell_check_lst:
             if word not in navec:
@@ -68,12 +68,16 @@ async def processing_pipeline(df: pd.DataFrame, test_mode=False, save_pickle=Fal
                     normal_form = morph_word.normal_form.replace("ё", "е")
                     for sub in normal_form.split():
                         normal_form_lst.append(sub)
-        
+            else:
+                normal_form_lst.append(word)
+
         root_search_lst = []
         for word in normal_form_lst:
             if word not in navec:
                 for root_searched_word in root_search(word):
                     root_search_lst.append(root_searched_word)
+            else:
+                root_search_lst.append(word)
 
         if root_search_lst == []:
             return "<pad>"
@@ -85,6 +89,7 @@ async def processing_pipeline(df: pd.DataFrame, test_mode=False, save_pickle=Fal
     
     df[NORMALIZED_NAME] = df[NAME].apply(normalize) 
     df[NORMALIZED_DESCRIPTION] = df[DESCRIPTION].apply(normalize) 
+    print(df[[NORMALIZED_NAME, NORMALIZED_DESCRIPTION]])
     logger.info("text fields normalized")
     df[NAME_VEC] = df[NORMALIZED_NAME].apply(to_vec)
     df[DESCRIPTION_VEC] = df[NORMALIZED_DESCRIPTION].apply(to_vec)

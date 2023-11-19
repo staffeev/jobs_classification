@@ -7,7 +7,7 @@ from sklearn.metrics.pairwise import cosine_distances
 from sklearn.cluster import AgglomerativeClustering
 
 
-def clustering_pipeline(df):
+def clustering_pipe(df):
     n_resumes = df.shape[0]
     emb_len = len(df.iloc[0][NAME_VEC])
     print(f'loaded {n_resumes} resumes')
@@ -34,5 +34,5 @@ def clustering_pipeline(df):
 
 if __name__ == "__main__":
     df = pd.read_csv(PATH_TO_JOBS_DATASET)
-    clustering_pipeline(df)
+    clustering_pipe(df)
     
