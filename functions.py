@@ -1,6 +1,4 @@
 import timeit
-from matplotlib import pyplot as plt
-from wordcloud import WordCloud
 import pandas as pd
 
 
