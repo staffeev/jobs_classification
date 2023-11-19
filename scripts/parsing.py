@@ -81,7 +81,7 @@ class Resume:
         date = None
         if not birth_date is None:
             birth_date = birth_date.text
-            date = datetime.strptime(birth_date, "%d %B %Y")
+            date = datetime.now()
         return sex, date
     
     def _process_education(self, div):

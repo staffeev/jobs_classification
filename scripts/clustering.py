@@ -42,7 +42,7 @@ def clustering_pipe(df, test_mode=False, save_pickle=False):
     n_jobs = df.shape[0]
     # emb_len = len(df.iloc[0][NAME_VEC])
     logger.info(f'loaded {n_jobs} jobs for clusterization')
-    df[COORDS] = df[NAME_VEC] * 10 + df[DESCRIPTION_VEC] 
+    df[COORDS] = df[NAME_VEC] # * 10 + df[DESCRIPTION_VEC] 
     clustering = AgglomerativeClustering(n_clusters=50).fit(np.stack(df[COORDS]))
     labels = clustering.labels_
     df[CLUSTER_ID] = pd.Series(labels)

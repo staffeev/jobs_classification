@@ -13,6 +13,7 @@ from settings import NORMALIZED_NAME, \
     PATH_TO_NAVEC, \
     PATH_TO_PICKLE
 from scripts.parsing import PICKLE_PARSED
+from sentence_transformers import SentenceTransformer
 
 PICKLE_PROCESSED = "processed.pickle"
 logger = make_logger(__name__)
@@ -34,7 +35,7 @@ async def processing_pipe(df: pd.DataFrame, test_mode=False, save_pickle=False):
 
     morph = pymorphy2.MorphAnalyzer()
     TO_DELETE = {'CONJ', 'PREP', 'PRCL', 'INTJ', 'NUMR', 'NPRO'}
-
+    model = SentenceTransformer('cointegrated/rubert-tiny2')
 
     def normalize(string: str) -> str:
         lower_string = string.lower()
@@ -47,54 +48,23 @@ async def processing_pipe(df: pd.DataFrame, test_mode=False, save_pickle=False):
         no_number_string = re.sub(r'\d+','',lower_string)
         no_punc_string = re.sub(r'[^\w\s]',' ', no_number_string)
         no_wspace_string = no_punc_string.strip()
-        lst_string = no_wspace_string.split()
-        
-        if lst_string == []:
-            return "<pad>"
-        
-        spell_check_lst = []
-        for word in lst_string:
-            if word not in navec:
-                for spell_checked_word in spell_check(word):
-                    spell_check_lst.append(spell_checked_word)
-            else:
-                spell_check_lst.append(word)
-        
-        normal_form_lst = []
-        for word in spell_check_lst:
-            if word not in navec:
-                morph_word = morph.parse(word)[0]
-                if morph_word.tag.POS not in TO_DELETE:
-                    normal_form = morph_word.normal_form.replace("ё", "е")
-                    for sub in normal_form.split():
-                        normal_form_lst.append(sub)
-            else:
-                normal_form_lst.append(word)
-
-        root_search_lst = []
-        for word in normal_form_lst:
-            if word not in navec:
-                for root_searched_word in root_search(word):
-                    root_search_lst.append(root_searched_word)
-            else:
-                root_search_lst.append(word)
-
-        if root_search_lst == []:
-            return "<pad>"
-
-        return " ".join(root_search_lst)
+        return no_wspace_string
 
     def to_vec(string: str):
-        return sum([navec[word] for word in string.split() if word in navec])
+        return model.encode([string])[0]
     
     df[NORMALIZED_NAME] = df[NAME].apply(normalize) 
     df[NORMALIZED_DESCRIPTION] = df[DESCRIPTION].apply(normalize) 
     logger.info("text fields normalized")
     df[NAME_VEC] = df[NORMALIZED_NAME].apply(to_vec)
-    df[DESCRIPTION_VEC] = df[NORMALIZED_DESCRIPTION].apply(to_vec)
+    # df[DESCRIPTION_VEC] = df[NORMALIZED_DESCRIPTION].apply(to_vec)
     logger.info("text fields vectorized")
 
     if save_pickle:
         df.to_pickle(PATH_TO_PICKLE + PICKLE_PROCESSED)
         logger.info("processed pickle file dumped")
     return df
+
+
+if __name__ == "__main__":
+    df = pickle.load()
