@@ -4,8 +4,6 @@ from navec import Navec
 import pandas as pd
 from settings import NORMALIZED_NAME, \
     NORMALIZED_DESCRIPTION, \
-    NAME_VEC, \
-    DESCRIPTION_VEC, \
     NAME, \
     DESCRIPTION, \
     PATH_TO_NAVEC
@@ -53,11 +51,6 @@ async def normalization_pipeline(df: pd.DataFrame):
 
         return " ".join(normalized_lst)
 
-    def to_vec(string: str):
-        return sum([navec[word] for word in string.split() if word in navec])
-
     df[NORMALIZED_NAME] = df[NAME].apply(normalize) 
     df[NORMALIZED_DESCRIPTION] = df[DESCRIPTION].apply(normalize) 
-    df[NAME_VEC] = df[NORMALIZED_NAME].apply(to_vec)
-    df[DESCRIPTION_VEC] = df[NORMALIZED_DESCRIPTION].apply(to_vec)
     return df
