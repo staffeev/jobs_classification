@@ -1,7 +1,7 @@
 beautifulsoup4 == 4.10.0
 numpy == 1.23.0
 tensorflow == 2.13.0
-scikit-learn == 1.0.2
+scikit-learn == 1.11.4
 navec == 0.10.0
 matplotlib == 3.7.4
 sentence_transformers==2.2.2
